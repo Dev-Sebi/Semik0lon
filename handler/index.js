@@ -24,14 +24,20 @@ const globPromise = promisify(glob);
 
 
     client.on("ready", async (client) => {
+        const UpdateChannel = await client.channels.cache.find(ch => ch.id === process.env.MemberUpdatesChannel)
+        const guild = client.guilds.cache.get(process.env.ServerID);
+        const MemberCount = guild.memberCount
+        const UpdateString = `Members: ${MemberCount} ♡`
+
         console.log(`Logged in as ${client.user.tag}!`);
         console.log(`Currently in ${client.guilds.cache.size} ${client.guilds.cache.size == 1 ? "Server" : "Servers"}`);
-        // const f = await client.application.commands.fetch()
-        // f.forEach(cmd => cmd.delete())
-        //await client.application.commands.set(ArrayOfApplicationCommands); // if you want to update every guild the server is in (up to 1 hour for the update to complete)
         await client.guilds.cache.get(process.env.ServerID).commands.set(ArrayOfApplicationCommands); // if you want to update only one guild (instant update)
         console.log("Commands Loaded!")
-        client.user.setActivity("semic0lon", { type: "WATCHING" });
-        
+        client.user.setActivity("semik0lon", { type: "WATCHING" });
+
+        UpdateChannel.setName(UpdateString)
+        setInterval(() => {
+            UpdateChannel.setName(UpdateString)
+        }, 60000 * 5); // All 5 Minutes
     });
 };
